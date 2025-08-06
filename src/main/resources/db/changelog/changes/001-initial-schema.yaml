@@ -1,0 +1,286 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: skillbridge
+      changes:
+      # users table 
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bio
+                  type: TEXT
+              - column:
+                  name: hours_available
+                  type: INTEGER
+                  defaultValue: 0
+                  constraints: 
+                    nullable: false
+              - column:
+                  name: rating
+                  type: DECIMAL(3, 2)
+                  defaultValue: 0.0
+              - column: 
+                  name: active
+                  type: BOOLEAN
+                  defaultValue: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+      # skills table
+        - createTable:
+            tableName: skills
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: category
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_skills_created_by
+                    references: users(id)
+      # user_skills table
+        - createTable:
+            tableName: user_skills
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_skills_user_id
+                    references: users(id)
+              - column:
+                  name: skill_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_skills_skill_id
+                    references: skills(id)
+              - column:
+                  name: proficiency
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: hourly_rate
+                  type: INTEGER
+                  defaultValue: 0
+      # exchanges table
+        - createTable:
+            tableName: exchanges
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: skill_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exchanges_skill_id
+                    references: skills(id)
+              - column:
+                  name: requester_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exchanges_requester_id
+                    references: users(id)
+              - column:
+                  name: provider_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exchanges_provider_id
+                    references: users(id)
+              - column: 
+                  name: hours 
+                  type: INTEGER
+                  constraints:
+                    nullable: false 
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: "PENDING"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: scheduled_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: completed_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+      # reviews table
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: reviewer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reviews_reviewer_id
+                    references: users(id)
+              - column:
+                  name: reviewed_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reviews_reviewed_id
+                    references: users(id)
+              - column:
+                  name: exchange_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reviews_exchange_id
+                    references: exchanges(id)
+              - column:
+                  name: rating
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: user_skills
+            indexName: idx_user_skills_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: user_skills
+            indexName: idx_user_skills_skill_id
+            columns:
+              - column:
+                  name: skill_id
+
+        - createIndex:
+            tableName: exchanges
+            indexName: idx_exchanges_provider_id
+            columns:
+              - column:
+                  name: provider_id
+
+        - createIndex:
+            tableName: exchanges
+            indexName: idx_exchanges_requester_id
+            columns:
+              - column:
+                  name: requester_id
+
+        - createIndex:
+            tableName: exchanges
+            indexName: idx_exchanges_status
+            columns:
+              - column:
+                  name: status
+
+        - createIndex:
+            tableName: reviews
+            indexName: idx_reviews_reviewer_id
+            columns:
+              - column:
+                  name: reviewer_id
+
+        - createIndex:
+            tableName: reviews
+            indexName: idx_reviews_reviewed_id
+            columns:
+              - column:
+                  name: reviewed_id 
