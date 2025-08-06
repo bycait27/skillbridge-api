@@ -1,0 +1,85 @@
+spring:
+  application: 
+    name: skillbridge-api
+
+  profiles:
+    active: dev
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/skillbridge
+    username: ${DB_USERNAME:caitlinash}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties: 
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+  
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true 
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000ms
+  
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  
+  jwt:
+    secret: ${JWT_SECRET:secret}
+    expiration: 900000 # 15 minutes
+    refresh-expiration: 604800000 # 7 days
+  
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health, info, metrics, prometheus
+        base-path: /actuator
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+      distribution:
+        percentiles-histogram:
+          http.server.requests: true
+  
+  springdoc: 
+    api-docs:
+      path: /api-docs 
+    swagger-ui:
+      path: /swagger-ui.html
+      operations-sorter: method
+      tags-sorter: alpha 
+  
+  logging: 
+    level:
+      com.caitlinash.skillbridge_api: DEBUG
+      org.springframework.security: DEBUG
+      org.hibernate.SQL: DEBUG
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  
+  server:
+    port: ${SERVER_PORT:8080} 
+    error:
+      include-message: always
+      include-binding-errors: always
+
+  # Disable security for development
+  security:
+    user:
+      name: admin
+      password: admin 

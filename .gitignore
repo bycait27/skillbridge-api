@@ -124,6 +124,10 @@ application-local.properties
 application-dev.properties
 application-prod.properties
 application-test.properties
+application-local.yml
+application-dev.yml
+application-prod.yml
+application-test.yml
 
 # Database
 *.db
@@ -133,6 +137,7 @@ application-test.properties
 # Docker
 .dockerignore
 docker-compose.override.yml
+docker-compose.override.yaml
 
 # Environment variables
 .env
@@ -258,4 +263,27 @@ config/prod/
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db 
+Thumbs.db
+
+# Application logs and runtime files
+*.pid
+*.pid.lock
+application.pid
+spring.pid
+
+# Test reports and coverage
+target/surefire-reports/
+target/site/
+target/jacoco/
+coverage/
+
+# IDE specific files (additional)
+*.swp
+*.swo
+*~
+
+# Local development files
+.env.local
+.env.development
+.env.test
+.env.production 
