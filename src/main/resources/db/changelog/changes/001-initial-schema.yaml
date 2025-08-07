@@ -57,6 +57,8 @@ databaseChangeLog:
                   name: active
                   type: BOOLEAN
                   defaultValue: true
+                  constraints:
+                    nullable: false
               - column:
                   name: created_at
                   type: TIMESTAMP
@@ -93,12 +95,6 @@ databaseChangeLog:
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
-              - column:
-                  name: created_by
-                  type: BIGINT
-                  constraints:
-                    foreignKeyName: fk_skills_created_by
-                    references: users(id)
       # user_skills table
         - createTable:
             tableName: user_skills
@@ -124,14 +120,23 @@ databaseChangeLog:
                     foreignKeyName: fk_user_skills_skill_id
                     references: skills(id)
               - column:
-                  name: proficiency
+                  name: proficiency_level
                   type: VARCHAR(20)
                   constraints:
                     nullable: false
+                    check: "proficiency_level IN ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT')"
               - column:
-                  name: hourly_rate
-                  type: INTEGER
-                  defaultValue: 0
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
       # exchanges table
         - createTable:
             tableName: exchanges
@@ -174,6 +179,7 @@ databaseChangeLog:
                   defaultValue: "PENDING"
                   constraints:
                     nullable: false
+                    check: "status IN ('PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')"
               - column:
                   name: scheduled_date
                   type: TIMESTAMP
