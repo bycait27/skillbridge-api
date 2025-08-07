@@ -179,7 +179,7 @@ databaseChangeLog:
                   defaultValue: "PENDING"
                   constraints:
                     nullable: false
-                    check: "status IN ('PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')"
+                    check: "status IN ('PENDING', 'ACCEPTED', 'REJECTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')"
               - column:
                   name: scheduled_date
                   type: TIMESTAMP
